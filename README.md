@@ -23,8 +23,9 @@ conf.user_password = '!passwordomg!'
 
 em = Em(conf=conf)
 em.login()
-em.attach(attachment='pdf.pdf')
-em.send(toaddr='someemail@gmail.com', subject=subject,
+em.set_message(toaddr='someemail@gmail.com', subject=subject,
     message=message)
+em.attach(attachment='pdf.pdf')
+em.send()
 em.logout()
 ```

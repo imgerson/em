@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -16,7 +15,9 @@ class ConfigEm:
 
 class Em:
     msg = None
+    msg_as_string = None
     conf = None
+    toaddr = None
 
     def __init__(self, conf):
         self.conf = conf
@@ -34,16 +35,20 @@ class Em:
 
         self.msg.attach(attachment)
 
-    def send(self, toaddr, subject, message):
+    def set_message(self, toaddr, subject, message):
+        self.toaddr = toaddr
+
         self.msg['From'] = self.conf.user
-        self.msg['To'] = toaddr
+        self.msg['To'] = self.toaddr
         self.msg['Subject'] = subject
         self.msg.attach(MIMEText(message, 'plain'))
 
-        msg_as_string = self.msg.as_string()
+    def send(self):
+        self.msg_as_string = self.msg.as_string()
 
         if self.server:
-            self.server.sendmail(self.conf.user, toaddr, msg_as_string)
+            self.server.sendmail(
+                self.conf.user, self.toaddr, self.msg_as_string)
         else:
             raise EnvironmentError('Not connection to server')
 
